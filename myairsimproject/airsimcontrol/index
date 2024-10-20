@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AirSim Drone Control</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>AirSim Drone Control</h1>
+    <button onclick="control('api/takeoff/')">Takeoff</button>
+    <button onclick="control('api/land/')">Land</button>
+    <br><br>
+    X: <input type="text" id="x" value="0">
+    Y: <input type="text" id="y" value="0">
+    Z: <input type="text" id="z" value="10">
+    <button onclick="move()">Move</button>
+    <div id="state"></div>
+
+    <script>
+        function control(endpoint) {
+            $.get('/airsim/' + endpoint, function(data) {
+                alert(data.status);
+            });
+        }
+
+        function move() {
+            var x = $('#x').val();
+            var y = $('#y').val();
+            var z = $('#z').val();
+            $.get('/airsim/api/move/?x=' + x + '&y=' + y + '&z=' + z, function(data) {
+                alert(data.status);
+            });
+        }
+
+        function getState() {
+            $.get('/airsim/api/state/', function(data) {
+                $('#state').html(JSON.stringify(data, null, 2));
+            });
+        }
+
+        // Update state every 2 seconds
+        setInterval(getState, 2000);
+    </script>
+</body>
+</html>
